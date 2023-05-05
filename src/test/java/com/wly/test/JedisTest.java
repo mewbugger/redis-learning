@@ -1,5 +1,6 @@
 package com.wly.test;
 
+import com.wly.util.JedisConnectionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,14 +28,20 @@ public class JedisTest {
          * 原因：windows下还未找到修改绑定ip的方法，只能用本地地址访问
          * 用上述代码，会报错：redis.clients.jedis.exceptions.JedisConnectionException: Failed to create socket.
          */
-        jedis = new Jedis("127.0.0.1", 6379);
+        //普通连接
+        //jedis = new Jedis("127.0.0.1", 6379);
+
+        //连接池
+        jedis = JedisConnectionFactory.getJedis();
+
         //2.设置密码
         /**
          * 当windows下的redis没有设置密码，如果这里设置密码就报错
          * redis.clients.jedis.exceptions.JedisDataException: ERR Client sent AUTH, but no password is set
-         *
+         *  jedis.auth("123456");
+         *  这里将密码验证注释掉是因为，windows每次启动redis服务都需要重新设置redis的密码，暂未找到一次性修改密码方式
          */
-        jedis.auth("123456");
+
         ///3.选择库
         jedis.select(0);
     }
